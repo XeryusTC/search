@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from PIL import Image, ImageDraw
 
 OBSTACLE = 0
 OPEN = 1
@@ -33,3 +34,17 @@ class Grid:
             ret += '|\n'
         ret += '+' + '-' * self.width + '+'
         return ret
+
+    def draw(self, scale=10):
+        if scale <= 0:
+            raise ValueError('Scale must be positive')
+
+        im = Image.new('RGB', (self.width*scale, self.height*scale),
+            (255, 255, 255))
+        draw = ImageDraw.Draw(im)
+
+        for x, y in self.grid:
+            if self.grid[x, y] == OBSTACLE:
+                draw.rectangle((x*scale, y*scale, (x+1)*scale, (y+1)*scale),
+                    fill=(0, 0, 0))
+        return im
