@@ -44,6 +44,24 @@ class GridTests(unittest.TestCase):
         self.assertCountEqual(g.neighbours(0, 1), [(0,0), (0,2)])
         self.assertCountEqual(g.neighbours(1, 2), [(0,2), (2,2), (1,3)])
 
+    def test_string_representation(self):
+        g = grid.Grid(3, 3)
+        self.assertEqual(str(g), "+---+\n|   |\n|   |\n|   |\n+---+")
+
+    def test_string_representation_with_obstacles(self):
+        g = grid.Grid(3, 3)
+        g.grid[1, 1] = grid.OBSTACLE
+        self.assertEqual(str(g), "+---+\n|   |\n| X |\n|   |\n+---+")
+
+    def test_string_representation_complex(self):
+        g = grid.Grid(6, 4)
+        g.grid[1, 1] = grid.OBSTACLE
+        g.grid[2, 3] = grid.OBSTACLE
+        g.grid[4, 1] = grid.OBSTACLE
+        g.grid[5, 0] = grid.OBSTACLE
+        self.assertEqual(str(g), "+------+\n|     X|\n| X  X |\n|      |\n" +
+            "|  X   |\n+------+")
+
 
 if __name__ == '__main__':
     unittest.main()
