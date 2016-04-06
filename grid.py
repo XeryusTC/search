@@ -48,3 +48,7 @@ class Grid:
                 draw.rectangle((x*scale, y*scale, (x+1)*scale, (y+1)*scale),
                     fill=(0, 0, 0))
         return im
+
+
+def dist(s, d):
+    return abs(s[0] - d[0]) + abs(s[1] - d[1])

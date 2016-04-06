@@ -135,5 +135,18 @@ class GridDrawTests(unittest.TestCase):
         self.assertEqual(self.g.draw(), ImageMock.new.return_value)
 
 
+class DistanceHeuristicTests(unittest.TestCase):
+    def test_cost_is_zero_for_same_start_and_destination(self):
+        self.assertEqual(grid.dist((0, 0), (0, 0)), 0)
+        self.assertEqual(grid.dist((1, 5), (1, 5)), 0)
+        self.assertEqual(grid.dist((7, 2), (7, 2)), 0)
+
+    def test_cost_is_equal_to_manhattan_distance(self):
+        self.assertEqual(grid.dist((0, 0), (10, 10)), 20)
+        self.assertEqual(grid.dist((5, 7), (3, 9)), 4)
+        self.assertEqual(grid.dist((31, 8), (78, 2)), 53)
+        self.assertEqual(grid.dist((9, 7), (1, 2)), 13)
+        self.assertEqual(grid.dist((6, 2), (8, 13)), 13)
+
 if __name__ == '__main__':
     unittest.main()
