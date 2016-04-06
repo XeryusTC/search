@@ -59,6 +59,10 @@ class Grid:
                     fill=(0, 0, 0))
         return im
 
+    @property
+    def open_cells(self):
+        return [k for k in self.grid if self.grid[k] == OPEN]
+
 
 def dist(s, d):
     return abs(s[0] - d[0]) + abs(s[1] - d[1])

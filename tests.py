@@ -78,6 +78,27 @@ class GridTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             grid.Grid(10, 10, 1)
 
+    def test_open_cell_list_contains_all_cells_when_no_obstacles(self):
+        g = grid.Grid(10, 10)
+        self.assertCountEqual(g.open_cells, g.grid.keys())
+
+    def test_open_cell_list_does_not_contain_obstacle_cells(self):
+        g = grid.Grid(10, 10)
+        g.grid = {(x, y): grid.OBSTACLE for x in range(10) for y in range(10)}
+        self.assertEqual(g.open_cells, [])
+
+    def test_open_cell_list_does_not_contain_obstacle_cells2(self):
+        g = grid.Grid(5, 5)
+        g.grid[1, 1] = grid.OBSTACLE
+        g.grid[2, 3] = grid.OBSTACLE
+        g.grid[4, 4] = grid.OBSTACLE
+        g.grid[4, 1] = grid.OBSTACLE
+        self.assertEqual(len(g.open_cells), 21)
+        self.assertNotIn((1, 1), g.open_cells)
+        self.assertNotIn((2, 3), g.open_cells)
+        self.assertNotIn((4, 4), g.open_cells)
+        self.assertNotIn((4, 1), g.open_cells)
+
 
 @mock.patch('grid.ImageDraw', spec=True)
 @mock.patch('grid.Image', spec=True)
