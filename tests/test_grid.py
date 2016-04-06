@@ -2,7 +2,6 @@
 import unittest
 import unittest.mock as mock
 import grid
-import util
 
 class GridTests(unittest.TestCase):
     def test_grid_ctor_requires_size(self):
@@ -184,34 +183,3 @@ class DistanceHeuristicTests(unittest.TestCase):
         self.assertEqual(grid.dist((31, 8), (78, 2)), 53)
         self.assertEqual(grid.dist((9, 7), (1, 2)), 13)
         self.assertEqual(grid.dist((6, 2), (8, 13)), 13)
-
-
-class ProblemGenerateTests(unittest.TestCase):
-    @mock.patch('util.grid.Grid')
-    def test_generates_a_grid(self, GridMock):
-        GridMock.return_value.open_cells = [(0,0), (0, 1), (1, 0)]
-        util.generate_problem(10, 10, 0.1)
-        GridMock.assert_called_once_with(10, 10, 0.1)
-
-    def test_generates_a_grid_with_correct_width(self):
-        g, _, _ = util.generate_problem(32, 16, 0)
-        self.assertEqual(g.width, 32)
-
-    def test_generates_a_grid_with_correct_height(self):
-        g, _, _ = util.generate_problem(32, 16, 0)
-        self.assertEqual(g.height, 16)
-
-    def test_generates_a_grid_with_obstacles(self):
-        g, _, _ = util.generate_problem(10, 10, 0.2)
-        obs = sum([1 for x, y in g.grid if g.grid[x, y] == grid.OBSTACLE])
-        self.assertAlmostEqual(obs/100, 0.2, delta=0.1)
-
-    def test_start_and_goal_positions_are_not_the_same(self):
-        for i in range(100):
-            with self.subTest(i=i):
-                g, start, end = util.generate_problem(5, 5, 0.2)
-                self.assertNotEqual(start, end)
-
-
-if __name__ == '__main__':
-    unittest.main()
