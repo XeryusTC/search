@@ -1,15 +1,7 @@
 # -*- coding: utf-8 -*-
 import heapq
-import random
 import grid
-
-def generate_problem(width, height, obstacles):
-    g = grid.Grid(width, height, obstacles)
-    start = random.choice(g.open_cells)
-    goal = random.choice(g.open_cells)
-    while start == goal:
-        goal = random.choice(g.open_cells)
-    return g, start, goal
+import util
 
 def astar(g, start, goal):
     closed = set()
@@ -36,7 +28,6 @@ def astar(g, start, goal):
             came_from[n] = current
             g_scores[n] = g_score
             heapq.heappush(open_list, (g_score + grid.dist(n, goal), n))
-    print(came_from)
     return None
 
 def reconstruct(came_from, current):
@@ -48,7 +39,7 @@ def reconstruct(came_from, current):
     return path
 
 if __name__ == '__main__':
-    g, start, goal = generate_problem(32, 32, 0.2)
+    g, start, goal = util.generate_problem(32, 32, 0.2)
     print(start, goal)
     print(g)
     path = astar(g, start, goal)
