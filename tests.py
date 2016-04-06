@@ -63,6 +63,21 @@ class GridTests(unittest.TestCase):
         self.assertEqual(str(g), "+------+\n|     X|\n| X  X |\n|      |\n" +
             "|  X   |\n+------+")
 
+    def test_ctor_can_generate_random_obstacles(self):
+        g = grid.Grid(10, 10, 0.2)
+        obs = sum([1 for x, y in g.grid if g.grid[x, y] == grid.OBSTACLE])
+        self.assertAlmostEqual(obs/100, 0.2, delta=0.1)
+
+    def test_ctor_random_obstacles_greater_or_equal_to_zero(self):
+        with self.assertRaises(ValueError):
+            grid.Grid(10, 10, -0.1)
+        with self.assertRaises(ValueError):
+            grid.Grid(10, 10, -1)
+
+    def test_ctor_random_obstacles_smaller_than_one(self):
+        with self.assertRaises(ValueError):
+            grid.Grid(10, 10, 1)
+
 
 @mock.patch('grid.ImageDraw', spec=True)
 @mock.patch('grid.Image', spec=True)

@@ -1,14 +1,24 @@
 # -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw
+import random
 
 OBSTACLE = 0
 OPEN = 1
 
 class Grid:
-    def __init__(self, width, height):
-        self.grid = {(x,y): OPEN for x in range(width) for y in range(height)}
+    def __init__(self, width, height, obstacles=0):
+        if not 0 <= obstacles < 1:
+            raise ValueError('Chance of obstacles should be 0 <= P < 1')
         self.width = width
         self.height = height
+
+        self.grid = {}
+        for x in range(self.width):
+            for y in range(self.height):
+                if random.random() < obstacles:
+                    self.grid[x, y] = OBSTACLE
+                else:
+                    self.grid[x, y] = OPEN
 
     def neighbours(self, x, y):
         if self.grid[x, y] == OBSTACLE:
