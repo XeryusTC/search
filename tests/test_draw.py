@@ -77,3 +77,76 @@ class GridDrawTests(unittest.TestCase):
 
     def test_returns_surface_object(self, ImageMock, ImageDrawMock):
         self.assertEqual(draw.draw_grid(self.g), ImageMock.new.return_value)
+
+
+@mock.patch('draw.ImageDraw', spec=True)
+@mock.patch('draw.Image', spec=True)
+class DrawPathTests(unittest.TestCase):
+    def test_draws_on_surface_parameter(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        draw.draw_path(im, [(0, 0), (0, 1)])
+        ImageDrawMock.Draw.assert_called_once_with(im)
+
+    def test_path_drawn_from_centre_of_grid(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (0, 1)])
+        d.line.assert_called_once_with([(5, 5), (5, 15)], fill=(255, 0, 0))
+
+    def test_path_must_have_at_least_two_steps(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        with self.assertRaises(ValueError):
+            draw.draw_path(im, [])
+        with self.assertRaises(ValueError):
+            draw.draw_path(im, [(0, 0)])
+
+    def test_line_gets_drawn_between_all_steps(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (0, 1), (1, 1), (1, 0)])
+        d.line.assert_called_once_with([(5, 5), (5, 15), (15, 15), (15, 5)],
+            fill=(255, 0, 0))
+
+    def test_can_have_scale_parameter(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (0, 1)], scale=50)
+        d.line.assert_called_once_with([(25, 25), (25, 75)], fill=(255, 0, 0))
+
+    def test_can_set_path_colour(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (0, 0)], color=(0, 255, 0))
+        d.line.assert_called_once_with([(5, 5), (5, 5)], fill=(0, 255, 0))
+
+    def test_path_colour_is_red_by_default(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (0, 0)])
+        d.line.assert_called_once_with([(5, 5), (5, 5)], fill=(255, 0, 0))
+
+    def test_returns_original_surface_object(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        self.assertEqual(draw.draw_path(im, [(0, 0), (0, 0)]), im)
+
+    def test_draws_circle_at_path_endpoint(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (0, 0)])
+        d.ellipse.assert_called_once_with([(0, 0), (10, 10)],
+            outline=(255, 0, 0))
+
+    def test_draws_circle_at_path_endpoint2(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (1, 0)])
+        d.ellipse.assert_called_once_with([(10, 0), (20, 10)],
+            outline=(255, 0, 0))
+
+    def test_endpoint_circle_has_same_colour_as_path(self, ImageMock,
+            ImageDrawMock):
+        im = ImageMock.new()
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_path(im, [(0, 0), (0, 0)], color=(0, 0, 255))
+        d.ellipse.assert_called_once_with([(0, 0), (10, 10)],
+            outline=(0, 0, 255))

@@ -15,3 +15,18 @@ def draw_grid(g, scale=10):
                 fill=(0, 0, 0))
 
     return im
+
+def draw_path(im, path, scale=10, color=(255, 0, 0)):
+    if len(path) < 2:
+        raise ValueError('The path has to consist of at least one move')
+
+    endpos = path[-1]
+    path = [((x+.5)*scale, (y+.5)*scale) for x, y in path]
+
+    draw = ImageDraw.Draw(im)
+    draw.line(path, fill=color)
+
+    draw.ellipse([(endpos[0]*scale, endpos[1]*scale), ((endpos[0]+1)*scale,
+        (endpos[1]+1)*scale)], outline=color)
+
+    return im
