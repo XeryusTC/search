@@ -42,8 +42,8 @@ def reconstruct(came_from, current):
 
 if __name__ == '__main__':
     g, start, goal = util.generate_problem(32, 32, 0.2)
-    print('Stand:', start, 'goal:', goal)
+    print('Start:', start, 'goal:', goal)
     path = astar(g, start, goal)
-    print('Found lenght vs heuristic:', len(path), grid.dist(start, goal))
+    print('Found length vs heuristic:', len(path), grid.dist(start, goal))
 
     draw.draw_path(draw.draw_grid(g), path).show()
