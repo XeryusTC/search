@@ -66,7 +66,7 @@ class GridTests(unittest.TestCase):
     def test_ctor_can_generate_random_obstacles(self):
         g = grid.Grid(10, 10, 0.2)
         obs = sum([1 for x, y in g.grid if g.grid[x, y] == grid.OBSTACLE])
-        self.assertAlmostEqual(obs/100, 0.2, delta=0.1)
+        self.assertAlmostEqual(obs/100, 0.2, delta=0.15)
 
     def test_ctor_random_obstacles_greater_or_equal_to_zero(self):
         with self.assertRaises(ValueError):
