@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import heapq
+
+import draw
 import grid
 import util
 
@@ -40,8 +42,8 @@ def reconstruct(came_from, current):
 
 if __name__ == '__main__':
     g, start, goal = util.generate_problem(32, 32, 0.2)
-    print(start, goal)
-    print(g)
+    print('Stand:', start, 'goal:', goal)
     path = astar(g, start, goal)
-    print(len(path), grid.dist(start, goal))
-    print(path)
+    print('Found lenght vs heuristic:', len(path), grid.dist(start, goal))
+
+    draw.draw_path(draw.draw_grid(g), path).show()
