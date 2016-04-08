@@ -51,6 +51,12 @@ class GridTests(unittest.TestCase):
         self.assertCountEqual(g.neighbours(1, 2), [(0,1), (2,1), (0,2), (2,2),
             (0,3), (1,3), (2,3)])
 
+    def test_diagonal_cell_between_two_obstacles_is_not_in_neighbours(self):
+        g = grid.Grid(3,3)
+        g.grid[0, 0] = grid.OBSTACLE
+        g.grid[1, 1] = grid.OBSTACLE
+        self.assertNotIn((0, 1), g.neighbours(1, 0))
+
     def test_string_representation(self):
         g = grid.Grid(3, 3)
         self.assertEqual(str(g), "+---+\n|   |\n|   |\n|   |\n+---+")

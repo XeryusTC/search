@@ -29,6 +29,9 @@ class Grid:
                 if h == 0 and v == 0:
                     continue # skip center
                 try:
+                    if h != 0 and v != 0 and self.grid[x+h, y] == OBSTACLE \
+                        and self.grid[x, y+v] == OBSTACLE:
+                        continue
                     if self.grid[x+h, y+v] == OPEN:
                         ret.append((x+h, y+v))
                 except KeyError:
