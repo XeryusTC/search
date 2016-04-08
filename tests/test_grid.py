@@ -18,7 +18,8 @@ class GridTests(unittest.TestCase):
 
     def test_can_get_grid_neighbours(self):
         g = grid.Grid(6, 4)
-        self.assertCountEqual(g.neighbours(1, 1), [(0,1), (1,0), (1,2), (2,1)])
+        self.assertCountEqual(g.neighbours(1, 1), [(0,0), (0,1), (0,2), (1,0),
+            (1,2), (2,0), (2,1), (2,2)])
 
     def test_obstacle_has_no_neighbours(self):
         g = grid.Grid(6,4)
@@ -27,23 +28,28 @@ class GridTests(unittest.TestCase):
 
     def test_edge_cells_dont_have_non_existent_neighbours(self):
         g = grid.Grid(6, 4)
-        self.assertCountEqual(g.neighbours(0, 1), [(0,0), (1,1), (0,2)])
-        self.assertCountEqual(g.neighbours(1, 0), [(0,0), (2,0), (1,1)])
-        self.assertCountEqual(g.neighbours(5, 1), [(4,1), (5,0), (5,2)])
-        self.assertCountEqual(g.neighbours(1, 3), [(0,3), (2,3), (1,2)])
+        self.assertCountEqual(g.neighbours(0, 1), [(0,0), (0,2), (1,0), (1,1),
+            (1,2)])
+        self.assertCountEqual(g.neighbours(1, 0), [(0,0), (2,0), (0,1), (1,1),
+            (2,1)])
+        self.assertCountEqual(g.neighbours(5, 1), [(4,0), (4,1), (4,2), (5,0),
+            (5,2)])
+        self.assertCountEqual(g.neighbours(1, 3), [(0,3), (2,3), (0,2), (1,2),
+            (2,2)])
 
     def test_corner_cells_dont_have_non_existent_neighbours(self):
         g = grid.Grid(6, 4)
-        self.assertCountEqual(g.neighbours(0, 0), [(1,0), (0,1)])
-        self.assertCountEqual(g.neighbours(5, 0), [(5,1), (4,0)])
-        self.assertCountEqual(g.neighbours(0, 3), [(1,3), (0,2)])
-        self.assertCountEqual(g.neighbours(5, 3), [(4,3), (5,2)])
+        self.assertCountEqual(g.neighbours(0, 0), [(1,0), (0,1), (1,1)])
+        self.assertCountEqual(g.neighbours(5, 0), [(5,1), (4,0), (4,1)])
+        self.assertCountEqual(g.neighbours(0, 3), [(1,3), (0,2), (1,2)])
+        self.assertCountEqual(g.neighbours(5, 3), [(4,3), (5,2), (4,2)])
 
     def test_obstacle_cells_are_not_in_neighbours(self):
         g = grid.Grid(6, 4)
         g.grid[1, 1] = grid.OBSTACLE
-        self.assertCountEqual(g.neighbours(0, 1), [(0,0), (0,2)])
-        self.assertCountEqual(g.neighbours(1, 2), [(0,2), (2,2), (1,3)])
+        self.assertCountEqual(g.neighbours(0, 1), [(0,0), (0,2), (1,0), (1,2)])
+        self.assertCountEqual(g.neighbours(1, 2), [(0,1), (2,1), (0,2), (2,2),
+            (0,3), (1,3), (2,3)])
 
     def test_string_representation(self):
         g = grid.Grid(3, 3)
@@ -106,9 +112,9 @@ class DistanceHeuristicTests(unittest.TestCase):
         self.assertEqual(grid.dist((1, 5), (1, 5)), 0)
         self.assertEqual(grid.dist((7, 2), (7, 2)), 0)
 
-    def test_cost_is_equal_to_manhattan_distance(self):
-        self.assertEqual(grid.dist((0, 0), (10, 10)), 20)
-        self.assertEqual(grid.dist((5, 7), (3, 9)), 4)
-        self.assertEqual(grid.dist((31, 8), (78, 2)), 53)
-        self.assertEqual(grid.dist((9, 7), (1, 2)), 13)
-        self.assertEqual(grid.dist((6, 2), (8, 13)), 13)
+    def test_cost_is_equal_to_number_of_optimal_straight_line_steps(self):
+        self.assertEqual(grid.dist((0, 0), (10, 10)), 10)
+        self.assertEqual(grid.dist((5, 7), (3, 9)), 2)
+        self.assertEqual(grid.dist((31, 8), (78, 2)), 47)
+        self.assertEqual(grid.dist((9, 7), (1, 2)), 8)
+        self.assertEqual(grid.dist((6, 2), (8, 13)), 11)
