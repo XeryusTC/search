@@ -22,7 +22,7 @@ def astar(g, start, goal):
             if n in closed:
                 continue # skip already evaluated neighbours
 
-            g_score = g_scores[current] + 1
+            g_score = g_scores[current] + grid.cost(current, n)
             if n in g_scores and g_score > g_scores[n]:
                 continue # This is not a better path
 

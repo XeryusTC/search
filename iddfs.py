@@ -5,13 +5,13 @@ import util
 
 def iddfs(g, start, goal):
     for i in range(40):
-        path = iddfs_rec(g, start, goal, [start], i)
+        path = iddfs_rec(g, start, goal, [start], i, 0)
         if path != None:
             return path
     return None
 
-def iddfs_rec(g, pos, goal, path, max_depth):
-    if len(path) > max_depth:
+def iddfs_rec(g, pos, goal, path, max_cost, cost):
+    if cost > max_cost:
         return None
     if pos == goal:
         return path
@@ -19,7 +19,8 @@ def iddfs_rec(g, pos, goal, path, max_depth):
     for n in g.neighbours(*pos):
         if n in path:
             continue # don't follow loops
-        p = iddfs_rec(g, n, goal, path + [n], max_depth)
+        p = iddfs_rec(g, n, goal, path + [n], max_cost,
+            cost + grid.cost(pos, n))
         if p != None:
             return p
     return None
