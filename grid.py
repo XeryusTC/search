@@ -24,12 +24,15 @@ class Grid:
         if self.grid[x, y] == OBSTACLE:
             return []
         ret = []
-        for p in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            try:
-                if self.grid[x+p[0], y+p[1]] == OPEN:
-                    ret.append((x+p[0], y+p[1]))
-            except KeyError:
-                pass
+        for h in range(-1, 2):
+            for v in range(-1, 2):
+                if h == 0 and v == 0:
+                    continue # skip center
+                try:
+                    if self.grid[x+h, y+v] == OPEN:
+                        ret.append((x+h, y+v))
+                except KeyError:
+                    pass
         return ret
 
     def __str__(self):
@@ -51,4 +54,4 @@ class Grid:
 
 
 def dist(s, d):
-    return abs(s[0] - d[0]) + abs(s[1] - d[1])
+    return max(abs(s[0] - d[0]), abs(s[1] - d[1]))
