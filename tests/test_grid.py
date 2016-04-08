@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import math
 import unittest
 import unittest.mock as mock
 import grid
@@ -113,7 +114,7 @@ class GridTests(unittest.TestCase):
 
 
 class DistanceHeuristicTests(unittest.TestCase):
-    def test_cost_is_zero_for_same_start_and_destination(self):
+    def test_heuristic_is_zero_for_same_start_and_destination(self):
         self.assertEqual(grid.dist((0, 0), (0, 0)), 0)
         self.assertEqual(grid.dist((1, 5), (1, 5)), 0)
         self.assertEqual(grid.dist((7, 2), (7, 2)), 0)
@@ -124,3 +125,22 @@ class DistanceHeuristicTests(unittest.TestCase):
         self.assertEqual(grid.dist((31, 8), (78, 2)), 47)
         self.assertEqual(grid.dist((9, 7), (1, 2)), 8)
         self.assertEqual(grid.dist((6, 2), (8, 13)), 11)
+
+class CostTests(unittest.TestCase):
+    def test_cost_is_zero_for_same_cell(self):
+        self.assertEqual(grid.cost((0, 0), (0, 0)), 0)
+        self.assertEqual(grid.cost((7, 8), (7, 8)), 0)
+        self.assertEqual(grid.cost((2, 5), (2, 5)), 0)
+
+    def test_cost_for_cardinal_move_is_one(self):
+        self.assertEqual(grid.cost((0, 0), (1, 0)), 1)
+        self.assertEqual(grid.cost((7, 1), (7, 2)), 1)
+        self.assertEqual(grid.cost((9, 4), (8, 4)), 1)
+        self.assertEqual(grid.cost((6, 2), (6, 1)), 1)
+
+    def test_cost_for_diagonal_move_is_sqrt_two(self):
+        answer = math.sqrt(2)
+        self.assertEqual(grid.cost((0, 0), (1, 1)), answer)
+        self.assertEqual(grid.cost((8, 2), (7, 1)), answer)
+        self.assertEqual(grid.cost((9, 6), (8, 7)), answer)
+        self.assertEqual(grid.cost((2, 3), (3, 2)), answer)

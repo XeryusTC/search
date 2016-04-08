@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw
 import random
+import math
 
 OBSTACLE = 0
 OPEN = 1
@@ -58,3 +59,6 @@ class Grid:
 
 def dist(s, d):
     return max(abs(s[0] - d[0]), abs(s[1] - d[1]))
+
+def cost(s, d):
+   return math.sqrt(abs(s[0] - d[0]) + abs(s[1] - d[1]))
