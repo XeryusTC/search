@@ -18,19 +18,21 @@ def rrt(g, start, goal, max_iter=10000):
                 closest = n
                 dist = grid.dist(n, q)
         # Find grid cell that is most in direction of sample
-        dx = closest[0] - q[0]
-        dy = closest[1] - q[1]
-        x = max(-1, min(round(dx/dy), 1)) if dy != 0 else 1
-        y = max(-1, min(round(dy/dx), 1)) if dx != 0 else 1
-        c = (closest[0]-x, closest[1]-y)
-        if c not in g.neighbours(*closest) or c in nodes:
-            continue # skip inaccessible and already visited cells
+        c = g.neighbours(*closest)[0]
+        dist = grid.dist(c, q)
+        for n in g.neighbours(*closest):
+            if grid.dist(n, q) < dist:
+                c = n
+                dist = grid.dist(n, q)
+        if c in nodes:
+            continue # skip already visited cells
         nodes.append(c)
         edges.append((closest, c))
         if c == goal:
             print('arrived at goal')
-            return reconstruct(edges, start, goal)
+            return (reconstruct(edges, start, goal), edges)
     print('No path found')
+    return None, edges
 
 def reconstruct(edges, start, goal):
     path = [goal]
@@ -42,14 +44,17 @@ def reconstruct(edges, start, goal):
                 current = s
         if current == start:
             path.reverse()
-            print(path)
             return path
     raise Exception('Could not reconstruct the path')
 
 if __name__ == '__main__':
-    g, start, goal = util.generate_problem(16, 16, 0.2)
+    g, start, goal = util.generate_problem(32, 32, 0.2)
     print('Start:', start, 'goal:', goal)
-    path = rrt(g, start, goal)
-    print('Found length vs heuristic:', len(path), grid.dist(start, goal))
+    path, edges = rrt(g, start, goal)
+    if path != None:
+        print('Found length vs heuristic:', len(path), grid.dist(start, goal))
 
-    draw.draw_path(draw.draw_grid(g), path).show()
+    im = draw.draw_tree(draw.draw_grid(g), edges)
+    if path != None:
+        draw.draw_path(im, path)
+    im.show()
