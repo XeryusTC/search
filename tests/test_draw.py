@@ -150,3 +150,41 @@ class DrawPathTests(unittest.TestCase):
         draw.draw_path(im, [(0, 0), (0, 0)], color=(0, 0, 255))
         d.ellipse.assert_called_once_with([(0, 0), (10, 10)],
             outline=(0, 0, 255))
+
+
+@mock.patch('draw.ImageDraw')
+@mock.patch('draw.Image')
+class DrawTreeTests(unittest.TestCase):
+    def test_draws_on_surface_parameter(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        draw.draw_tree(im, [((0, 0), (1, 1))])
+        ImageDrawMock.Draw.assert_called_once_with(im)
+
+    def test_returns_original_surface_object(self, ImageMock, ImageDrawMock):
+        im = ImageMock.new()
+        self.assertEqual(draw.draw_tree(im, []), im)
+
+    def test_branch_drawn_from_centre_of_grid(self, ImageMock, ImageDrawMock):
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_tree(None, [((0, 0), (0, 1))])
+        d.line.assert_called_once_with([(5, 5), (5, 15)], fill=(0, 0, 255))
+
+    def test_line_gets_drawn_for_each_edge(self, ImageMock, ImageDrawMock):
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_tree(None, [((0, 0), (0, 1)), ((0, 0), (1, 0)), ((5, 5), (6, 6))])
+        self.assertEqual(d.line.call_count, 3)
+
+    def test_can_have_scale_parameter(self, ImageMock, ImageDrawMock):
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_tree(None, [((0, 0), (0, 1))], scale=20)
+        d.line.assert_called_once_with([(10, 10), (10, 30)], fill=(0, 0, 255))
+
+    def test_can_set_tree_colour(self, ImageMock, ImageDrawMock):
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_tree(None, [((0, 0), (0, 1))], color=(255, 255, 0))
+        d.line.assert_called_once_with([(5, 5), (5, 15)], fill=(255, 255, 0))
+
+    def test_path_colour_is_blue_by_default(self, ImageMock, ImageDrawMock):
+        d = ImageDrawMock.Draw.return_value
+        draw.draw_tree(None, [((0, 0), (0, 1))])
+        d.line.assert_called_once_with([(5, 5), (5, 15)], fill=(0, 0, 255))

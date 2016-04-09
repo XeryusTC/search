@@ -30,3 +30,12 @@ def draw_path(im, path, scale=10, color=(255, 0, 0)):
         (endpos[1]+1)*scale)], outline=color)
 
     return im
+
+def draw_tree(im, edges, scale=10, color=(0, 0, 255)):
+    draw = ImageDraw.Draw(im)
+
+    for e in edges:
+        p1 = ((e[0][0]+.5)*scale, (e[0][1]+.5)*scale)
+        p2 = ((e[1][0]+.5)*scale, (e[1][1]+.5)*scale)
+        draw.line([p1, p2], fill=color)
+    return im
